@@ -39,3 +39,14 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# env files
+.env
+
+# local build checks
+dist-check-*/
+
+# IDE / AI tools
+.agents/
+.claude/
+skills-lock.json
