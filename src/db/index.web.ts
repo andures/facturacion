@@ -1,4 +1,5 @@
 import { supabase } from '@/src/utils/supabase';
+import { loadSettings, setupSettingsSync } from './settings-web';
 
 const _tables: Record<string, any[]> = {
   clientes:       [],
@@ -161,4 +162,7 @@ export async function initDb(): Promise<void> {
   _tables.productos      = pr.data ?? [];
   _tables.facturas       = fa.data ?? [];
   _tables.lineas_factura = li.data ?? [];
+
+  await loadSettings();
+  setupSettingsSync();
 }

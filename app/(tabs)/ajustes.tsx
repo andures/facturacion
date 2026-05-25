@@ -1,7 +1,6 @@
-import * as FileSystem from 'expo-file-system/legacy';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LabeledInput } from '@/src/components/LabeledInput';
 import { useSettingsStore } from '@/src/store/settings';
@@ -28,10 +27,19 @@ export default function AjustesScreen() {
       quality: 0.8,
     });
     if (result.canceled || !result.assets[0]) return;
-    const dest = `${FileSystem.documentDirectory}logo_${Date.now()}.jpg`;
-    if (logoUri) await FileSystem.deleteAsync(logoUri, { idempotent: true });
-    await FileSystem.copyAsync({ from: result.assets[0].uri, to: dest });
-    setLogoUri(dest);
+    const uri = result.assets[0].uri;
+
+    if (Platform.OS === 'web') {
+      const { uriToBase64 } = await import('@/src/db/settings-web');
+      const base64 = await uriToBase64(uri);
+      setLogoUri(base64);
+    } else {
+      const FileSystem = await import('expo-file-system/legacy');
+      const dest = `${FileSystem.documentDirectory}logo_${Date.now()}.jpg`;
+      if (logoUri) await FileSystem.deleteAsync(logoUri, { idempotent: true });
+      await FileSystem.copyAsync({ from: uri, to: dest });
+      setLogoUri(dest);
+    }
   };
 
   const nextNumber = `${invoicePrefix}${new Date().getFullYear()}-${String(nextInvoiceNumber).padStart(3, '0')}`;
