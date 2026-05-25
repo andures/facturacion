@@ -2,7 +2,7 @@ services:
   - type: web
     name: facturacion
     runtime: static
-    buildCommand: npm ci && npx expo export --platform web
+    buildCommand: npm ci && npx expo export --platform web && node scripts/inject-pwa.mjs
     staticPublishPath: dist
     routes:
       - type: rewrite
