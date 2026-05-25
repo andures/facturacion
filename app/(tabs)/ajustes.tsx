@@ -1,13 +1,11 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LabeledInput } from '@/src/components/LabeledInput';
 import { useSettingsStore } from '@/src/store/settings';
 import { COLORS, FONT, RADIUS, SPACING } from '@/constants/theme';
-import { getDb } from '@/src/db';
-import { resetAndSeed } from '@/src/db/seed';
 
 export default function AjustesScreen() {
   const insets = useSafeAreaInsets();
@@ -37,27 +35,6 @@ export default function AjustesScreen() {
   };
 
   const nextNumber = `${invoicePrefix}${new Date().getFullYear()}-${String(nextInvoiceNumber).padStart(3, '0')}`;
-
-  const handleLoadMockData = () => {
-    Alert.alert(
-      'Cargar datos de ejemplo',
-      'Se reemplazarán todos los clientes, productos y facturas con datos de prueba. ¿Continuar?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Cargar',
-          onPress: async () => {
-            try {
-              await resetAndSeed(getDb() as any);
-              Alert.alert('Listo', 'Datos de ejemplo cargados correctamente.');
-            } catch {
-              Alert.alert('Error', 'No se pudieron cargar los datos.');
-            }
-          },
-        },
-      ]
-    );
-  };
 
   return (
     <ScrollView
@@ -112,11 +89,6 @@ export default function AjustesScreen() {
           />
         </View>
       </View>
-
-      {/* ── Datos de prueba ─────────────── */}
-      <TouchableOpacity style={styles.mockBtn} onPress={handleLoadMockData} activeOpacity={0.8}>
-        <Text style={styles.mockBtnText}>Cargar datos de ejemplo</Text>
-      </TouchableOpacity>
 
       {/* ── Facturación ──────────────────── */}
       <View style={styles.group}>
@@ -227,13 +199,4 @@ const styles = StyleSheet.create({
   },
   numberBadgeText: { fontSize: 13, fontWeight: FONT.bold, color: COLORS.primary },
 
-  mockBtn: {
-    borderRadius: RADIUS.md,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    paddingVertical: SPACING.md,
-    alignItems: 'center',
-  },
-  mockBtnText: { fontSize: 14, fontWeight: FONT.medium, color: COLORS.textSecondary },
 });
