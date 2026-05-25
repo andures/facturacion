@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { COLORS } from '@/constants/theme';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { COLORS, FONT } from '@/constants/theme';
 
 interface Props {
   onPress: () => void;
@@ -9,10 +9,16 @@ interface Props {
 export function FAB({ onPress, label }: Props) {
   return (
     <Pressable
-      style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+      style={({ pressed }) => [
+        styles.fab,
+        !!label && styles.fabExtended,
+        pressed && styles.fabPressed,
+      ]}
       onPress={onPress}
     >
-      <Text style={styles.icon}>+</Text>
+      <View style={styles.iconWrap}>
+        <Text style={styles.icon}>+</Text>
+      </View>
       {label ? <Text style={styles.label}>{label}</Text> : null}
     </Pressable>
   );
@@ -21,32 +27,45 @@ export function FAB({ onPress, label }: Props) {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 104,
     right: 20,
     backgroundColor: COLORS.primary,
-    borderRadius: 28,
-    minWidth: 56,
-    height: 56,
-    flexDirection: 'row',
+    borderRadius: 26,
+    width: 52,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: `0px 4px 16px ${COLORS.primary}55, 0px 1px 4px ${COLORS.primary}33`,
+    borderWidth: 1.5,
+    borderColor: '#93C5FD',
+    elevation: 8,
+  },
+  fabExtended: {
+    borderRadius: 16,
+    width: undefined,
     paddingHorizontal: 20,
-    gap: 6,
-    boxShadow: `0px 4px 8px ${COLORS.primary}59`,
-    elevation: 6,
+    flexDirection: 'row',
+    gap: 8,
   },
   fabPressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.97 }],
+    transform: [{ scale: 0.92 }],
+    boxShadow: `0px 2px 8px ${COLORS.primary}33`,
+  },
+  iconWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
-    fontSize: 26,
-    color: '#fff',
-    lineHeight: 30,
+    fontSize: 24,
+    color: '#0F172A',
+    fontWeight: FONT.bold,
+    lineHeight: 26,
+    includeFontPadding: false,
   },
   label: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
+    fontSize: 14,
+    fontWeight: FONT.semibold,
+    color: '#0F172A',
+    letterSpacing: -0.2,
   },
 });
