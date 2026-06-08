@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { confirmDestructive } from '@/src/utils/confirm';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { getFacturaById, getLineasByFactura, updateEstado, deleteFactura } from '@/src/db/facturas';
 import { getClienteById } from '@/src/db/clientes';
@@ -83,21 +84,15 @@ export default function DetalleFacturaScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
+    confirmDestructive(
       'Eliminar factura',
       `¿Eliminar ${factura.numero}? Esta acción no se puede deshacer.`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => {
-            try { deleteFactura(factura.id); router.back(); } catch {
-              Alert.alert('Error', 'No se pudo eliminar la factura.');
-            }
-          },
-        },
-      ]
+      'Eliminar',
+      () => {
+        try { deleteFactura(factura.id); router.back(); } catch {
+          Alert.alert('Error', 'No se pudo eliminar la factura.');
+        }
+      },
     );
   };
 

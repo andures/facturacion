@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { confirmDestructive } from '@/src/utils/confirm';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getProductoById, updateProducto, deleteProducto } from '@/src/db/productos';
 import { LabeledInput } from '@/src/components/LabeledInput';
@@ -61,24 +62,18 @@ export default function EditarProductoScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
+    confirmDestructive(
       'Eliminar producto',
       `¿Eliminar "${producto?.nombre}"? Esta acción no se puede deshacer.`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => {
-            try {
-              deleteProducto(id);
-              router.back();
-            } catch {
-              Alert.alert('Error', 'No se pudo eliminar el producto.');
-            }
-          },
-        },
-      ]
+      'Eliminar',
+      () => {
+        try {
+          deleteProducto(id);
+          router.back();
+        } catch {
+          Alert.alert('Error', 'No se pudo eliminar el producto.');
+        }
+      },
     );
   };
 

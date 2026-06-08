@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { confirmDestructive } from '@/src/utils/confirm';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getClienteById, updateCliente, deleteCliente } from '@/src/db/clientes';
 import { LabeledInput } from '@/src/components/LabeledInput';
@@ -54,23 +55,18 @@ export default function EditarClienteScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
+    confirmDestructive(
       'Eliminar cliente',
       `¿Eliminar a ${cliente?.nombre}? Se perderán todas sus facturas.`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar', style: 'destructive',
-          onPress: () => {
-            try {
-              deleteCliente(id);
-              router.dismissAll();
-            } catch {
-              Alert.alert('Error', 'No se pudo eliminar el cliente.');
-            }
-          },
-        },
-      ]
+      'Eliminar',
+      () => {
+        try {
+          deleteCliente(id);
+          router.dismissAll();
+        } catch {
+          Alert.alert('Error', 'No se pudo eliminar el cliente.');
+        }
+      },
     );
   };
 

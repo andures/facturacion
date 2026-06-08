@@ -74,9 +74,20 @@ export default function ClientesScreen() {
     [clientes, search]
   );
 
+  const countLabel = search.trim()
+    ? `${filtered.length} de ${clientes.length} cliente${clientes.length !== 1 ? 's' : ''}`
+    : `${clientes.length} cliente${clientes.length !== 1 ? 's' : ''}`;
+
   const listHeader = (
     <View style={styles.listHeader}>
-      <SearchBar value={search} onChangeText={setSearch} placeholder="Buscar cliente…" />
+      <View style={styles.searchRow}>
+        <View style={styles.searchFlex}>
+          <SearchBar value={search} onChangeText={setSearch} placeholder="Buscar cliente…" />
+        </View>
+        <View style={styles.countBadge}>
+          <Text style={styles.countText} numberOfLines={1}>{countLabel}</Text>
+        </View>
+      </View>
     </View>
   );
 
@@ -120,6 +131,20 @@ const styles = StyleSheet.create({
   list: { paddingHorizontal: SPACING.md, paddingBottom: 120 },
 
   listHeader: { paddingHorizontal: SPACING.md, paddingTop: SPACING.md, paddingBottom: SPACING.sm },
+  searchRow: { flexDirection: 'row', alignItems: 'flex-start', gap: SPACING.sm },
+  searchFlex: { flex: 1 },
+  countBadge: {
+    backgroundColor: COLORS.surfaceRaised,
+    borderRadius: RADIUS.md,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    paddingHorizontal: SPACING.sm + 2,
+    height: 40,
+    justifyContent: 'center',
+    marginBottom: SPACING.sm,
+  },
+  countText: { fontSize: 12, fontWeight: FONT.medium, color: COLORS.textSecondary },
 
   avatar: {
     width: 44,

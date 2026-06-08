@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 interface SettingsState {
   businessName: string;
@@ -45,14 +46,18 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
     {
       name: 'facturacion-settings',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({
-        businessName: state.businessName,
-        taxId: state.taxId,
-        address: state.address,
-        invoicePrefix: state.invoicePrefix,
-        nextInvoiceNumber: state.nextInvoiceNumber,
-        logoUri: state.logoUri,
-      }),
+      partialize: (state) => {
+        const base = {
+          businessName: state.businessName,
+          taxId: state.taxId,
+          address: state.address,
+          invoicePrefix: state.invoicePrefix,
+          nextInvoiceNumber: state.nextInvoiceNumber,
+        };
+        // On web, logoUri is a base64 string stored in Supabase — skip AsyncStorage
+        if (Platform.OS !== 'web') return { ...base, logoUri: state.logoUri };
+        return base;
+      },
       merge: (persisted: unknown, current) => ({
         ...current,
         ...(persisted as object),
